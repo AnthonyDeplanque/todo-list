@@ -63,13 +63,18 @@ const ListComponent: React.FC = () => {
 
   return (
     <div style={listStyle}>
-      <ul style={ulStyle}>
-        {list.map((element: ListItemInterface) => (
-          <ListElement element={element} onDelete={onDelete} />
-        ))}
-      </ul>
+      {list.length ? (
+        <ul style={ulStyle}>
+          {list.map((element: ListItemInterface) => (
+            <ListElement element={element} onDelete={onDelete} />
+          ))}
+        </ul>
+      ) : (
+        <p>Pas d'éléments dans la liste pour le moment</p>
+      )}
 
       <ListForm onValidation={onValidation} />
+
       <Button
         onClick={(e) => {
           e.preventDefault();

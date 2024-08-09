@@ -8,6 +8,7 @@ export interface ListFormProps {
 const ListForm: React.FC<ListFormProps> = (props) => {
   const { onValidation } = props;
   const [description, setDescription] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
 
   const listFormStyle: React.CSSProperties = {
     display: "flex",
@@ -26,10 +27,18 @@ const ListForm: React.FC<ListFormProps> = (props) => {
     paddingBottom: "2rem",
   };
 
+  const inputStyle: React.CSSProperties = {
+    padding: "1rem",
+    borderRadius: "1rem",
+  };
+
+  const ERROR_MESSAGE = <p>Veuillez ajouter un élément svp !</p>;
+
   return (
     <div style={divFormStyle}>
       <form style={listFormStyle}>
         <input
+          style={inputStyle}
           value={description}
           placeholder="Ajouter un élément"
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -37,11 +46,18 @@ const ListForm: React.FC<ListFormProps> = (props) => {
           }
         ></input>
 
+        {error && ERROR_MESSAGE}
+
         <Button
           onClick={(e) => {
             e.preventDefault();
-            onValidation(description);
-            setDescription("");
+            if (description !== "") {
+              onValidation(description);
+              setDescription("");
+              setError(false);
+            } else {
+              setError(true);
+            }
           }}
         >
           Valider
