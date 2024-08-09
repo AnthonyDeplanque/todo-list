@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import { createUUID } from "../helpers/uuid";
 import ListElement from "./ListElement";
 import ListForm from "./ListForm";
 import Button from "./generics/Button";
+import { useList } from "../context/list/useList";
 
 export interface ListItemInterface {
   id: string;
@@ -21,31 +21,7 @@ const ListComponent: React.FC = () => {
     listStyleType: "initial",
   };
 
-  const [list, setList] = useState<ListItemInterface[]>([
-    {
-      id: createUUID(),
-      description: "descendre les poubelles",
-    },
-    {
-      id: createUUID(),
-      description: "faire à manger",
-    },
-    {
-      id: createUUID(),
-      description: "laver le sol",
-    },
-    {
-      id: createUUID(),
-      description: "lebron james",
-    },
-  ]);
-
-  useEffect(() => {}, [list]);
-
-  const onDelete = (id: string) => {
-    const newList = list.filter((element) => element.id !== id);
-    setList(newList);
-  };
+  const { todoList, addItem, removeItem, clearList } = useList();
 
   const onValidation = (value: string) => {
     const id = createUUID();
@@ -53,20 +29,15 @@ const ListComponent: React.FC = () => {
       id,
       description: value,
     };
-    const newList = [...list, newListItem];
-    setList(newList);
-  };
-
-  const onClear = () => {
-    setList([]);
+    addItem(newListItem);
   };
 
   return (
     <div style={listStyle}>
-      {list.length ? (
+      {todoList.length ? (
         <ul style={ulStyle}>
-          {list.map((element: ListItemInterface) => (
-            <ListElement element={element} onDelete={onDelete} />
+          {todoList.map((element: ListItemInterface) => (
+            <ListElement element={element} onDelete={removeItem} />
           ))}
         </ul>
       ) : (
@@ -78,7 +49,7 @@ const ListComponent: React.FC = () => {
       <Button
         onClick={(e) => {
           e.preventDefault();
-          onClear();
+          clearList();
         }}
       >
         Vider la liste
